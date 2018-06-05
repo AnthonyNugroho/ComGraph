@@ -6,7 +6,7 @@ html, body{
 	padding: 0;
 }
 
-#renderCanvas{
+#renderCanvas {
 	width: 100%;
 	height: 100%;
 	padding: 0;
@@ -17,6 +17,15 @@ html, body{
     position:absolute;
     top:20px;
     left : 20px;
+<<<<<<< HEAD
     color:white;
     font-size: 2em;
 }
+=======
+
+    color:white;
+    font-size: 2em;
+}
+ 
+    
+>>>>>>> a837d83022bf774cdfbea0a44eb02e02b61b9c81
