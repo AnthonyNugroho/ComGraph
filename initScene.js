@@ -1,5 +1,6 @@
 var canvas, engine, scene, camera, ground;
-document.addEventListener("DOMContentLoaded",function(){ onLoad();}, false);
+document.addEventListener("DOMContentLoaded",function(){ onLoad();
+}, false);
 
 var onLoad = function(){
   //get renderCanvas
@@ -55,6 +56,8 @@ var initScene = function(){
       // Purple haze, all around !
       d.diffuse = BABYLON.Color3.FromInts(204,196,255);
 
+      ground = new BABYLON.Mesh.CreateGround("ground", 800, 2000, 2, scene);
+
       ship = new Ship(1, scene);
 
   //var ball = new BABYLON.Mesh.CreateSphere("ball", 10, 1, scene);
@@ -64,16 +67,16 @@ var initScene = function(){
 
 
 
-  ground = new BABYLON.Mesh.CreateGround("ground", 800, 2000, 2, scene);
 
-  ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor,{mass: 0, restitution: 0.2, friction: 0.2}, scene);
+
+  //ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor,{mass: 0, restitution: 0.2, friction: 0.2}, scene);
   ground.material = mat;
 
   scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
    scene.fogDensity = 0.01;
 
    setInterval(box, 100);
-   setInterval(bonus, 1000);
+   setInterval(ammoB, 1000);
 }
 
 var box = function() {
@@ -125,31 +128,29 @@ var box = function() {
     b.actionManager.registerAction(onpickAction);
 };
 
-var bonus = function() {
-    var bonus = BABYLON.Mesh.CreateSphere("sphere", 20, 5, scene);
-    bonus.material = new BABYLON.StandardMaterial("bonusMat", scene);
-    bonus.material.diffuseColor = BABYLON.Color3.Green();
+var ammoB = function() {
+  var ammoB = BABYLON.Mesh.CreateSphere("sphere", 20, 5, scene);
+  ammoB.material = new BABYLON.StandardMaterial("bonusMat", scene);
+  ammoB.material.diffuseColor = BABYLON.Color3.Green();
 
-    var minZ = camera.position.z+500;
-    var maxZ = camera.position.z+1500;
-    var minX = camera.position.x - 100, maxX = camera.position.x+100;
+  var minZ = camera.position.z+500;
+  var maxZ = camera.position.z+1500;
+  var minX = camera.position.x - 100, maxX = camera.position.x+100;
 
-    bonus.position.x = randomNumber(minX, maxX);
-    bonus.position.y = 2.5;
-    bonus.position.z = randomNumber(minZ, maxZ);
+  ammoB.position.x = randomNumber(minX, maxX);
+  ammoB.position.y = 2.5;
+  ammoB.position.z = randomNumber(minZ, maxZ);
 
-    bonus.actionManager = new BABYLON.ActionManager(scene);
+  ammoB.actionManager = new BABYLON.ActionManager(scene);
 
-    // on collision with ship
-    var addAmmo = new BABYLON.IncrementValueAction(BABYLON.ActionManager.NothingTrigger, ship, "ammo", 1);
-    var destroyBonus = new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.NothingTrigger, function(evt) {
+  var addAmmo = new BABYLON.IncrementValueAction(BABYLON.ActionManager.NothingTrigger, ship, "ammo", 1);
+    var destroyBall = new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.NothingTrigger, function(evt) {
         ship.sendEvent();
         evt.source.dispose();
-    });
-
-    var trigger = {trigger:BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: ship};
-    var combine = new BABYLON.CombineAction(trigger, [addAmmo, destroyBonus]);
-    bonus.actionManager.registerAction(combine);
+});
+  var trigger = {trigger:BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: ship};
+  var combine = new BABYLON.CombineAction(trigger, [addAmmo, destroyBall]);
+  ammoB.actionManager.registerAction(combine);
 
 };
 
