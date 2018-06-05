@@ -1,25 +1,32 @@
-var canvas, engine, scene, camera, ground;
+var canvas, engine, scene, camera, ship, ground;
 document.addEventListener("DOMContentLoaded",function(){ onLoad();
 }, false);
 
-var onLoad = function(){
-  //get renderCanvas
-  canvas = document.getElementById("renderCanvas");
+window.addEventListener("resize", function () {
+	if (engine) {
+		engine.resize();
+	}
+},false);
 
-  //create babylon engine
-  engine = new BABYLON.Engine(canvas,true);
+var onLoad = function () {
+	// Engine creation
+    canvas = document.getElementById("renderCanvas");
+	engine = new BABYLON.Engine(canvas, true);
 
-  initScene();
-  engine.runRenderLoop(function(){
-    if (! ship.killed) {
-          ship.move();
-          camera.position.z += ship.speed;
-          ship.position.z += ship.speed;
-          ground.position.z += ship.speed;
-      }
-      scene.render();
+    // Scene creation
+	initScene();
 
-  });
+    // The render function
+	engine.runRenderLoop(function () {
+        if (! ship.killed) {
+            ship.move();
+
+            camera.position.z += ship.speed;
+            ship.position.z += ship.speed;
+            ground.position.z += ship.speed;
+        }
+        scene.render();
+	});
 };
 
 var initScene = function(){
@@ -77,7 +84,7 @@ var initScene = function(){
 
    setInterval(box, 100);
    setInterval(ammoB, 1000);
-}
+};
 
 var box = function() {
     var minZ = camera.position.z+500;
@@ -144,15 +151,23 @@ var ammoB = function() {
   ammoB.actionManager = new BABYLON.ActionManager(scene);
 
   var addAmmo = new BABYLON.IncrementValueAction(BABYLON.ActionManager.NothingTrigger, ship, "ammo", 1);
-    var destroyBall = new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.NothingTrigger, function(evt) {
-        ship.sendEvent();
-        evt.source.dispose();
-});
+  var pickup = new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.NothingTrigger, function(evt){
+    ship.sendEvent();
+
+  });
+
   var trigger = {trigger:BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: ship};
-  var combine = new BABYLON.CombineAction(trigger, [addAmmo, destroyBall]);
+  var combine = new BABYLON.CombineAction(trigger, [addAmmo, pickup]);
   ammoB.actionManager.registerAction(combine);
 
 };
+
+var bullet = function(){
+	var bul = BABYLON.Mesh.CreateSphere("cannon", 5, 2, scene);
+	bul.material = new BABYLON.StandardMaterial("bonusMat", scene);
+	bul.material.diffuseColor = BABYLON.Color3.Black();
+}
+
 
 /**
  * Random number

@@ -4,7 +4,7 @@ Ship = function(size, scene) {
     vd.applyToMesh(this, false);
 
     this.killed = false;
-    this.ammo = 3;
+    this.ammo = 0;
     this.position.x = 0;
     this.position.z = 0;
     this.position.y = size/2;

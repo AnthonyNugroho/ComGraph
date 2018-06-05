@@ -13,21 +13,10 @@ html, body{
 	margin: 0;
 	touch-action: none;
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 4c89ea859adeacc74f40241cec1c697258116a5d
 #ammoLabel {
     position:absolute;
     top:20px;
     left : 20px;
-<<<<<<< HEAD
     color:white;
     font-size: 2em;
 }
-=======
-    color: white;
-    font-size: 2em;
-}
-    
->>>>>>> 4c89ea859adeacc74f40241cec1c697258116a5d
