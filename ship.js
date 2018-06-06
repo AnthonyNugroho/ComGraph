@@ -31,7 +31,7 @@ Ship.prototype.sendEvent = function() {
 Ship.prototype._initLabelUpdate = function() {
 
     var updateAmmoLabel = function() {
-        document.getElementById("ammoLabel").innerHTML = "AMMO : "+ship.ammo;
+        document.getElementById("ammoLabel").innerHTML = "Score : "+ship.ammo;
     };
 
     BABYLON.Tools.RegisterTopRootEvents([{

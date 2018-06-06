@@ -23,13 +23,16 @@ document.addEventListener("DOMContentLoaded",function(){
 	var mat = new BABYLON.StandardMaterial("material",scene);
 
 	mat.specularColor = new BABYLON.Color3(0,1,0);
-	mat.diffuseTexture = new BABYLON.Texture("ground.png",scene);
-	mat.specularTexture = new BABYLON.Texture("assets/grass.jpg",scene);
+	mat.diffuseTexture = new BABYLON.Texture("Grass.jpg",scene);
 	mat.specularPower = 25;
 	//mat.emissiveColor = new BABYLON.Color3(0.2,0.2,0.2);
 	mat.ambientColor = new BABYLON.Color3(0.23,0.90,0.53);
 	//transparency
 	mat.alpha = 1;
+
+  var mat2 = new BABYLON.StandardMaterial("material2",scene);
+
+  mat2.diffuseTexture = new BABYLON.Texture("fire.jpg",scene);
 
 	//create light
 	var light = new BABYLON.HemisphericLight("hlight", new BABYLON.Vector3(0,8,0),scene);
@@ -40,7 +43,7 @@ document.addEventListener("DOMContentLoaded",function(){
 		d.intensity = 0.4;
 		d.diffuse = BABYLON.Color3.FromInts(204,196,255);
 
-		ground = new BABYLON.Mesh.CreateGround("ground", 800, 2000, 2, scene);
+		ground = new BABYLON.Mesh.CreateGround("ground", 8000, 2000, 2, scene);
 
 		ship = new Ship(1, scene);
 
@@ -55,6 +58,7 @@ document.addEventListener("DOMContentLoaded",function(){
 
 //ground.physicsImpostor = new BABYLON.PhysicsImpostor(ground, BABYLON.PhysicsImpostor.BoxImpostor,{mass: 0, restitution: 0.2, friction: 0.2}, scene);
 ground.material = mat;
+
 
 scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
  scene.fogDensity = 0.01;
@@ -89,24 +93,26 @@ scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
      var trigger = {trigger:BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: ship};
      var exec = new BABYLON.SwitchBooleanAction(trigger, ship, "killed");
      b.actionManager.registerAction(exec);
-
+     b.material = mat2;
+     
      // on pick
      // condition : ammo > 0
-     var condition = new BABYLON.ValueCondition(b.actionManager, ship, "ammo", 0, BABYLON.ValueCondition.IsGreater);
+     // var condition = new BABYLON.ValueCondition(b.actionManager, ship, "ammo", 0, BABYLON.ValueCondition.IsGreater);
 
-     var onpickAction = new BABYLON.ExecuteCodeAction(
-         BABYLON.ActionManager.OnPickTrigger,
-         function(evt) {
-             if (evt.meshUnderPointer) {
-                 var meshClicked = evt.meshUnderPointer;
-                 meshClicked.dispose();
-                 ship.ammo -= 1;
-                 ship.sendEvent();
-             }
-         },
-         condition);
+     // var onpickAction = new BABYLON.ExecuteCodeAction(
+     //     BABYLON.ActionManager.OnPickTrigger,
+     //     function(evt) {
+     //         if (evt.meshUnderPointer) {
+     //             var meshClicked = evt.meshUnderPointer;
+     //             meshClicked.dispose();
+     //             ship.ammo -= 1;
+     //             ship.sendEvent();
+     //         }
+     //     },
+     //     condition);
 
-     b.actionManager.registerAction(onpickAction);
+    b.actionManager.registerAction(onpickAction);
+    
  };
 
  var ammoB = function() {
@@ -124,7 +130,7 @@ scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
 
    ammoB.actionManager = new BABYLON.ActionManager(scene);
 
-   var addAmmo = new BABYLON.IncrementValueAction(BABYLON.ActionManager.NothingTrigger, ship, "ammo", 1);
+   var addAmmo = new BABYLON.IncrementValueAction(BABYLON.ActionManager.NothingTrigger, ship, "ammo", 50);
    var pickup = new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.NothingTrigger, function(evt){
      ship.sendEvent();
 
@@ -151,7 +157,18 @@ scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
 
  }
 
+    var shipMain;
+    shipMain = new BABYLON.Mesh.CreateBox('shipMain',1.0,scene);
+    shipMain.isVisible = false;
+    shipMain.position.y = 100;
 
+    BABYLON.SceneLoader.ImportMesh("","","ship.obj",scene, function(newMeshes)
+    {
+      for(var i =0; i < newMeshes.length; i++)
+      {
+          newMeshes[i].parent = shipMain;
+      }
+    });
 
 
  /**
